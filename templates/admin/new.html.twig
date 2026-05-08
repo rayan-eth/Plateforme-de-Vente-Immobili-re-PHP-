@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Listing{% endblock %}
+
+{% block body %}
+    <div class="admin-container">
+        <h1>{{ listing.id ? 'Edit Listing' : 'Create New Listing' }}</h1>
+
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn btn-primary">{{ listing.id ? 'Update' : 'Save' }}</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_admin_index') }}">back to list</a>
+    </div>
+{% endblock %}

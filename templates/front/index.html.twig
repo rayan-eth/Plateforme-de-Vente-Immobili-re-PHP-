@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EstateSphere | Luxury Real Estate{% endblock %}
+
+{% block body %}
+    <!-- Header -->
+    <header>
+        <div class="top-bar">
+            <p>Discover unparalleled luxury properties. We're here to help. <a href="tel:800-555-4321">Call (800) 555-LUXURY</a></p>
+        </div>
+        <div class="container">
+            <div class="main-header">
+                <div class="logo">Estate<span>Sphere</span></div>
+
+                <div class="header-actions">
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                             <a href="{{ path('app_admin_index') }}" class="sign-in-btn" style="background-color: transparent; border: 1px solid #d4af37; color: #d4af37 !important;">Admin Panel</a>
+                        {% endif %}
+                        <a href="{{ path('app_logout') }}" class="sign-in-btn">Logout</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="sign-in-btn">SIGN IN</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Image Background -->
+    <section class="hero-section">
+        <div class="video-background">
+            <img src="{{ asset('hero-bg.jpg') }}" alt="Luxury Estate" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="video-overlay"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="company-name">ESTATE SPHERE</h1>
+            <p class="tagline">The world's most exclusive marketplace for luxury real estate. Discover extraordinary properties that redefine elegance and sophistication.</p>
+            
+
+        </div>
+    </section>
+
+
+    <!-- Search Strip (Booking.com Style) -->
+    <div class="container">
+        <div class="search-strip-container">
+            <form action="{{ path('app_homepage') }}" method="get" class="search-strip">
+                <div class="search-field">
+                    <i class="fas fa-bed"></i>
+                    <input type="text" name="location" placeholder="Where are you going?" value="{{ searchParams.location|default('') }}">
+                </div>
+                <!-- Simple divider line or space -->
+                <div class="search-field">
+                    <i class="fas fa-dollar-sign"></i>
+                    <input type="number" name="min_price" placeholder="Min Price" value="{{ searchParams.min_price|default('') }}">
+                </div>
+                <div class="search-field">
+                    <i class="fas fa-dollar-sign"></i>
+                    <input type="number" name="max_price" placeholder="Max Price" value="{{ searchParams.max_price|default('') }}">
+                </div>
+                <button type="submit" class="search-submit-btn">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container results-container">
+        <div class="row">
+            <!-- Listings Column -->
+            <div class="col-12">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h2 style="color: #fff; font-size: 1.5rem; margin: 0;">{{ listings|length }} properties found</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-light active">List</button>
+                        <button class="btn btn-sm btn-outline-light">Grid</button>
+                    </div>
+                </div>
+
+                {% for listing in listings %}
+                <div class="listing-card-horizontal">
+                    <div class="h-card-img">
+                        <img src="{{ listing.image|default('https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') }}" alt="{{ listing.title }}">
+                        <i class="far fa-heart" style="position: absolute; top: 10px; right: 10px; color: #fff; font-size: 1.5rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); cursor: pointer;"></i>
+                    </div>
+                    
+                    <div class="h-card-info">
+                        <div>
+                            <div class="h-card-header">
+                                <a href="{{ path('app_listing_show', {'id': listing.id}) }}" class="h-card-title">{{ listing.title }}</a>
+                                <div class="d-flex">
+                                    <i class="fas fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+                                    <i class="fas fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+                                    <i class="fas fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+                                    <i class="fas fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+                                    <i class="fas fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+                                </div>
+                            </div>
+                            <a href="#" class="h-card-location">{{ listing.location }}</a> <span style="font-size: 0.8rem; color: #666;">• 2.5km from downtown</span>
+                            
+                            <div class="h-card-features">
+                                <p style="margin: 0; color: #eee;">Luxury Room • {{ listing.capacity }} Guests</p>
+                                <p style="margin: 5px 0 0 0; color: #4caf50; font-weight: 600; font-size: 0.8rem;">Free cancellation</p>
+                                <p style="margin: 0; color: #aaa; font-size: 0.75rem;">No prepayment needed</p>
+                            </div>
+                            
+                            <div class="h-card-desc">
+                                {{ listing.description }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="h-card-price-section">
+                        <div class="review-score">
+                            <div class="score-text">
+                                <div style="color: #fff; font-weight: 600; font-size: 0.9rem;">Wonderful</div>
+                                <div style="color: #888; font-size: 0.75rem;">12 reviews</div>
+                            </div>
+                            <div class="score-value">9.5</div>
+                        </div>
+                        
+                        <div>
+                            <div style="color: #888; font-size: 0.8rem;">2 nights, 2 adults</div>
+                            <div class="h-card-price">${{ listing.price|number_format }}</div>
+                            <div class="h-card-taxes">+ $45 taxes and charges</div>
+                            <a href="{{ path('app_listing_show', {'id': listing.id}) }}" class="view-deal-btn">
+                                See availability <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                    <div style="color: #fff; text-align: center; padding: 50px; background: #111; border-radius: 4px;">
+                        <h3>No properties found</h3>
+                        <p>Try adjusting your search criteria.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Simplified Footer -->
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2026 ESTATE SPHERE. All rights reserved. | <a href="#">PRIVACY POLICY</a> | <a href="#">TERMS OF USE</a></p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">The world's premier luxury real estate marketplace.</p>
+            </div>
+        </div>
+    </footer>
+{% endblock %}

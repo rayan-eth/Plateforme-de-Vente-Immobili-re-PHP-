@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EstateSphere | Admin Panel{% endblock %}
+
+{% block body_class %}admin-panel{% endblock %}
+
+{% block body %}
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">
+                <h1><span>Estate</span>Sphere</h1>
+                <p class="admin-subtitle">ADMIN PANEL</p>
+            </div>
+        </div>
+        
+        <div class="admin-profile">
+            <div class="profile-image">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="profile-info">
+                <h3>{{ app.user.firstName }} {{ app.user.lastName }}</h3>
+                <p>Administrator</p>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a href="{{ path('app_admin_index') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_homepage') }}">
+                        <i class="fas fa-home"></i>
+                        <span>View Site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h2>Property Management</h2>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-actions">
+                    <a href="{{ path('app_admin_new') }}" class="action-btn" style="background: #d4af37; color: black; border: none; padding: 10px 20px; text-decoration: none;">
+                        <i class="fas fa-plus"></i> Add Property
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Properties</h3>
+                    <p class="stat-number">{{ listings|length }}</p>
+                    <p class="stat-change"><i class="fas fa-arrow-up"></i> Live</p>
+                </div>
+            </div>
+            
+            <!-- Other stats placeholders -->
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-info">
+                    <h3>Total Revenue</h3>
+                    <p class="stat-number">$8.2M</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Table -->
+        <div class="content-section">
+            <div class="section-header mb-4 d-flex justify-content-between align-items-center">
+                <h3 style="color: #fff;"><i class="fas fa-list"></i> Property Listings</h3>
+                <a href="{{ path('app_admin_new') }}" class="btn btn-sm" style="background: #d4af37; color: black; font-weight: bold;">
+                    <i class="fas fa-plus"></i> Add New
+                </a>
+            </div>
+            
+            <div class="table-container">
+                <table class="properties-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Location</th>
+                            <th>Capacity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for listing in listings %}
+                        <tr>
+                            <td>{{ listing.id }}</td>
+                            <td>
+                                <div class="property-info" style="display: flex; align-items: center; gap: 15px;">
+                                    <div class="property-image" style="width: 40px; height: 40px; background: #333; display: flex; align-items: center; justify-content: center; border-radius: 4px; overflow: hidden;">
+                                        {% if listing.image %}
+                                            <img src="{{ listing.image }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <i class="fas fa-home" style="color: #666;"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div style="color: #fff; font-weight: 500;">{{ listing.title }}</div>
+                                        <p class="property-type" style="color: #666; font-size: 0.8rem; margin: 0;">Luxury Stay</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="price-tag" style="color: #d4af37; font-weight: 600;">${{ listing.price|number_format }}</span>
+                            </td>
+                            <td>
+                                <div class="location-info">
+                                    <i class="fas fa-map-marker-alt" style="color: #666; margin-right: 5px;"></i>
+                                    <span>{{ listing.location }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="capacity-info">
+                                    <i class="fas fa-users" style="color: #666; margin-right: 5px;"></i>
+                                    <span>{{ listing.capacity }} Guests</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ path('app_admin_edit', {'id': listing.id}) }}" class="action-btn edit" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_admin_delete', {'id': listing.id}) }}" onsubmit="return confirm('Delete this listing?');" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ listing.id) }}">
+                                        <button class="action-btn delete" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px;">No listings found. Start by adding one!</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+{% endblock %}

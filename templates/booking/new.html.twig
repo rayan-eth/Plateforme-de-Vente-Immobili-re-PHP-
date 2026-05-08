@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Request Reservation - {{ listing.title }}{% endblock %}
+
+{% block body %}
+<div class="admin-login-page" style="background-image: none; background-color: #050505; align-items: flex-start; padding-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="login-card" style="max-width: none; margin-bottom: 50px;">
+                    <div class="text-center mb-4">
+                        <div class="login-icon" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h2>Request Reservation</h2>
+                        <p class="text-muted">You are requesting a stay at <span style="color: #d4af37; font-weight: bold;">{{ listing.title }}</span></p>
+                    </div>
+
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Full Name</label>
+                                    <input type="text" name="name" required placeholder="John Doe">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                                    <input type="email" name="email" required placeholder="john@example.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                                    <input type="tel" name="phone" placeholder="+1 (555) 000-0000">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-users"></i> Number of Guests</label>
+                                    <input type="number" name="guests" min="1" max="{{ listing.capacity }}" value="2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-plus"></i> Check-in Date</label>
+                                    <input type="date" name="checkin" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-minus"></i> Check-out Date</label>
+                                    <input type="date" name="checkout" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-comment"></i> Special Requests</label>
+                            <textarea name="requests" rows="4" style="width: 100%; background-color: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px 15px; border-radius: 2px;" placeholder="Airport pickup, dietary requirements, etc."></textarea>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="login-btn">
+                                <i class="fas fa-paper-plane mr-2"></i> Submit Request
+                            </button>
+                            <a href="{{ path('app_listing_show', {'id': listing.id}) }}" class="d-block text-center mt-3" style="color: #666; text-decoration: none;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
